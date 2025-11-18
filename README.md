@@ -1,6 +1,6 @@
-# Chess game
+# Ballism game
 
-A simple Chess game in Javascript
+A simple Ballism game in Javascript
 Maded by Flávio Pavim
 https://flaviopavim.com.br
 
