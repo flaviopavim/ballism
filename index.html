@@ -1,23 +1,139 @@
 <!DOCTYPE html>
 <!--
-
-    Maded by Flávio Pavim
+    Made by Flávio Pavim
     https://flaviopavim.com.br
-
 -->
 <html>
     <head>
         <title>Ballism game in Javascript</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                margin: 0;
+                background: #111;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            canvas {
+                background: #222;
+                display: block;
+            }
+        </style>
     </head>
     <body>
+        <canvas id="game"></canvas>
         <script>
-
+            
             /*
              * Javascript ballism game
              */
+            
+            let height=25;
 
+            const canvas = document.getElementById("game");
+            const ctx = canvas.getContext("2d");
+            let size=0;
+            
+            let paddleBottomX = 0;
+            canvas.addEventListener("mousemove", function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+
+                let width = size / 10;
+
+                // centraliza a pá na posição do mouse
+                paddleBottomX = mouseX - width / 2;
+
+                // impede sair da tela
+                if (paddleBottomX < height) paddleBottomX = height;
+                if (paddleBottomX + width +height > size) paddleBottomX = size - width-height;
+
+                draw();
+            });
+
+
+            function resizeCanvas() {
+                // Stay squared
+                size = Math.min(window.innerHeight, window.innerWidth);
+                canvas.width = size;
+                canvas.height = size;
+                draw();
+            }
+            
+            function drawBall(x, y, radius) {
+                const gradient = ctx.createRadialGradient(
+                    x - radius/3, y - radius/3, radius * 0.2,   // ponto claro
+                    x, y, radius                                 // ponto escuro
+                );
+
+                gradient.addColorStop(0, "#fff");  // luz
+                gradient.addColorStop(0.3, "#ddd");
+                gradient.addColorStop(1, "#666");  // sombra
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            function draw() {
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Exemplo simples: um X pra mostrar o tamanho
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = "#111";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.moveTo(canvas.width, 0);
+                ctx.lineTo(0, canvas.height);
+                ctx.stroke();
+
+                let width=size/10;
+                
+                let middle=canvas.width/2;
+                
+                
+
+
+                ctx.fillStyle = "#333";
+                ctx.fillRect(
+                    height, 
+                    height, 
+                    canvas.width-(height+height), 
+                    canvas.height-(height+height)
+                );
+                
+                ctx.fillStyle = "#0f0";
+                
+                // x=100, y=50, largura=80, altura=20
+                
+                // up
+                ctx.fillRect(middle-(width/2), 0, width, height);
+                
+                // down
+//                ctx.fillRect(middle-(width/2), canvas.height-height, width, height);
+                ctx.fillRect(paddleBottomX, canvas.height - height, width, height);
+                
+                //left
+                ctx.fillRect(0, middle-(width/2), height, width);
+                
+                //right
+                ctx.fillRect(canvas.height-height, middle-(width/2), height, width);
+                
+                
+                drawBall(middle-(height/2), middle-(height/2), height/2);
+                
+            }
+
+            window.addEventListener("resize", resizeCanvas);
+            resizeCanvas();
+            
         </script>
     </body>
 </html>
